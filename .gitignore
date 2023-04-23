@@ -24,6 +24,7 @@ jni/libs/
 bazel-*
 *.pyc
 .idea*
+.vs
 
 cmake-build*
 small-blas-benchmarks
