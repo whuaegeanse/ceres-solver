@@ -157,11 +157,13 @@ class CERES_NO_EXPORT BlockSparseMatrix final : public SparseMatrix {
   // distributed and whose structure is determined by
   // RandomMatrixOptions.
   static std::unique_ptr<BlockSparseMatrix> CreateRandomMatrix(
-      const RandomMatrixOptions& options, std::mt19937& prng);
+      const RandomMatrixOptions& options,
+      std::mt19937& prng,
+      bool use_page_locked_memory = false);
 
  private:
   double* AllocateValues(int size);
-  void FreeValues(double* values);
+  void FreeValues(double*& values);
 
   const bool use_page_locked_memory_;
   int num_rows_;
