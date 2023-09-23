@@ -175,7 +175,7 @@ bool BlockCRSJacobiPreconditioner::UpdateImpl(
       0,
       num_row_blocks,
       options_.num_threads,
-      [this, row_blocks, a_rows, a_cols, a_values, m_values, m_rows](int i) {
+      [this, &row_blocks, a_rows, a_cols, a_values, m_values, m_rows](int i) {
         const int row = row_blocks[i].position;
         const int row_block_size = row_blocks[i].size;
         const int row_nnz = a_rows[row + 1] - a_rows[row];
@@ -205,7 +205,7 @@ bool BlockCRSJacobiPreconditioner::UpdateImpl(
       0,
       num_col_blocks,
       options_.num_threads,
-      [col_blocks, m_rows, m_values, D](int i) {
+      [&col_blocks, m_rows, m_values, D](int i) {
         const int col = col_blocks[i].position;
         const int col_block_size = col_blocks[i].size;
         MatrixRef m(m_values + m_rows[col], col_block_size, col_block_size);
