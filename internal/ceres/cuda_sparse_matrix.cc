@@ -1,5 +1,5 @@
 // Ceres Solver - A fast non-linear least squares minimizer
-// Copyright 2022 Google Inc. All rights reserved.
+// Copyright 2023 Google Inc. All rights reserved.
 // http://ceres-solver.org/
 //
 // Redistribution and use in source and binary forms, with or without
@@ -185,7 +185,6 @@ void CudaSparseMatrix::Initialize() {
 void CudaSparseMatrix::SpMv(cusparseOperation_t op,
                             const cusparseDnVecDescr_t& x,
                             const cusparseDnVecDescr_t& y) const {
-  size_t buffer_size = 0;
   const double alpha = 1.0;
   const double beta = 1.0;
 

@@ -1,5 +1,5 @@
 // Ceres Solver - A fast non-linear least squares minimizer
-// Copyright 2018 Google Inc. All rights reserved.
+// Copyright 2023 Google Inc. All rights reserved.
 // http://ceres-solver.org/
 //
 // Redistribution and use in source and binary forms, with or without
@@ -72,17 +72,18 @@ void ContextImpl::TearDown() {
 std::string ContextImpl::CudaConfigAsString() const {
   return ceres::internal::StringPrintf(
       "======================= CUDA Device Properties ======================\n"
-      "Cuda version         : %d.%d\n"
-      "Device ID            : %d\n"
-      "Device name          : %s\n"
-      "Total GPU memory     : %6.f MiB\n"
-      "GPU memory available : %6.f MiB\n"
-      "Compute capability   : %d.%d\n"
-      "Warp size            : %d\n"
-      "Max threads per block: %d\n"
-      "Max threads per dim  : %d %d %d\n"
-      "Max grid size        : %d %d %d\n"
-      "Multiprocessor count : %d\n"
+      "Cuda version              : %d.%d\n"
+      "Device ID                 : %d\n"
+      "Device name               : %s\n"
+      "Total GPU memory          : %6.f MiB\n"
+      "GPU memory available      : %6.f MiB\n"
+      "Compute capability        : %d.%d\n"
+      "Warp size                 : %d\n"
+      "Max threads per block     : %d\n"
+      "Max threads per dim       : %d %d %d\n"
+      "Max grid size             : %d %d %d\n"
+      "Multiprocessor count      : %d\n"
+      "cudaMallocAsync supported : %s\n"
       "====================================================================",
       cuda_version_major_,
       cuda_version_minor_,
@@ -100,7 +101,8 @@ std::string ContextImpl::CudaConfigAsString() const {
       gpu_device_properties_.maxGridSize[0],
       gpu_device_properties_.maxGridSize[1],
       gpu_device_properties_.maxGridSize[2],
-      gpu_device_properties_.multiProcessorCount);
+      gpu_device_properties_.multiProcessorCount,
+      gpu_device_properties_.memoryPoolsSupported ? "Yes" : "No");
 }
 
 size_t ContextImpl::GpuMemoryAvailable() const {

@@ -1,5 +1,5 @@
 // Ceres Solver - A fast non-linear least squares minimizer
-// Copyright 2022 Google Inc. All rights reserved.
+// Copyright 2023 Google Inc. All rights reserved.
 // http://ceres-solver.org/
 //
 // Redistribution and use in source and binary forms, with or without
@@ -42,7 +42,10 @@ namespace ceres::internal {
 // Blas1 operations on Eigen vectors. These functions are needed as an
 // abstraction layer so that we can use different versions of a vector style
 // object in the conjugate gradients linear solver.
-inline double Norm(const Vector& x, ContextImpl* context, int num_threads) {
+template <typename Derived>
+inline double Norm(const Eigen::DenseBase<Derived>& x,
+                   ContextImpl* context,
+                   int num_threads) {
   std::vector<double> norms(num_threads);
   ParallelFor(context,
               0,
