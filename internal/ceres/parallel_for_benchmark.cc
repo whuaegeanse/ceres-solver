@@ -25,27 +25,49 @@
 // CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
-//
-// Author: vitus@google.com (Michael Vitus)
 
-#ifndef CERES_EXAMPLES_POSE_GRAPH_2D_NORMALIZE_ANGLE_H_
-#define CERES_EXAMPLES_POSE_GRAPH_2D_NORMALIZE_ANGLE_H_
+#include "benchmark/benchmark.h"
+#include "ceres/parallel_for.h"
 
-#include <cmath>
+namespace ceres::internal {
 
-#include "ceres/ceres.h"
+// Parallel for with very small amount of work per iteration and small amount of
+// iterations benchmarks performance of task scheduling
+static void SchedulerBenchmark(benchmark::State& state) {
+  const int vector_size = static_cast<int>(state.range(0));
+  const int num_threads = static_cast<int>(state.range(1));
+  ContextImpl context;
+  context.EnsureMinimumThreads(num_threads);
 
-namespace ceres::examples {
-
-// Normalizes the angle in radians between [-pi and pi).
-template <typename T>
-inline T NormalizeAngle(const T& angle_radians) {
-  // Use ceres::floor because it is specialized for double and Jet types.
-  T two_pi(2.0 * constants::pi);
-  return angle_radians -
-         two_pi * ceres::floor((angle_radians + T(constants::pi)) / two_pi);
+  Vector x = Vector::Random(vector_size);
+  for (auto _ : state) {
+    ParallelFor(
+        &context, 0, vector_size, num_threads, [&x](int id) { x[id] = 0.; });
+  }
+  CHECK_EQ(x.squaredNorm(), 0.);
 }
+BENCHMARK(SchedulerBenchmark)
+    ->Args({128, 1})
+    ->Args({128, 2})
+    ->Args({128, 4})
+    ->Args({128, 8})
+    ->Args({128, 16})
+    ->Args({256, 1})
+    ->Args({256, 2})
+    ->Args({256, 4})
+    ->Args({256, 8})
+    ->Args({256, 16})
+    ->Args({1024, 1})
+    ->Args({1024, 2})
+    ->Args({1024, 4})
+    ->Args({1024, 8})
+    ->Args({1024, 16})
+    ->Args({4096, 1})
+    ->Args({4096, 2})
+    ->Args({4096, 4})
+    ->Args({4096, 8})
+    ->Args({4096, 16});
 
-}  // namespace ceres::examples
+}  // namespace ceres::internal
 
-#endif  // CERES_EXAMPLES_POSE_GRAPH_2D_NORMALIZE_ANGLE_H_
+BENCHMARK_MAIN();
